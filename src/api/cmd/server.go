@@ -9,10 +9,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/eduardocfalcao/url-shortener/src/api/config"
 	"github.com/eduardocfalcao/url-shortener/src/api/routes"
 )
 
-func StartHttpServer(address string) {
+func StartHttpServer(address string, config config.AppConfig) {
 	handler := routes.RegisterRoutes()
 	server := &http.Server{
 		Addr:         address,
@@ -38,6 +39,7 @@ func StartHttpServer(address string) {
 	case <-c:
 		log.Print("Stopping server...")
 		server.Shutdown(ctx)
+		os.Exit(0)
 	case <-ctx.Done():
 	}
 }
