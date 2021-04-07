@@ -22,7 +22,7 @@ func InitMigrator(db *sql.DB) (*Migrator, error) {
 		return defaultMigrator, err
 	}
 
-	rows, err := db.Query("SELECT version from `schema_migrations;`")
+	rows, err := db.Query("SELECT version FROM `schema_migrations`")
 	if err != nil {
 		return defaultMigrator, err
 	}

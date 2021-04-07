@@ -19,22 +19,15 @@ func init() {
 
 	migrateUpCmd.Flags().StringP("connString", "c", "", "Database connection string to run the migration")
 
-	migrateCmd.AddCommand(migrateCreateCmd, migrateUpCmd)
+	migrateDownCmd.Flags().StringP("connString", "c", "", "Database connection string to run the migration")
+	migrateDownCmd.Flags().IntP("step", "s", 0, "Database connection string to run the migration")
+
+	migrateCmd.AddCommand(migrateCreateCmd, migrateUpCmd, migrateDownCmd)
 
 	rootCmd.AddCommand(migrateCmd)
 }
 
 func main() {
-	// var args struct {
-	// 	ConnString string `short:"c" long:"connstring" required:"true" name:"Connection String"`
-	// }
-
-	// _, err := flags.Parse(&args)
-	// if err != nil {
-	// 	os.Stderr.WriteString(err.Error() + "\n")
-	// 	os.Exit(1)
-	// }
-
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -75,16 +68,56 @@ var migrateUpCmd = &cobra.Command{
 			return
 		}
 
-		db := database.NewConnection(connString)
+		db, err := database.NewConnection(connString)
+		if err != nil {
+			fmt.Printf("Unable to fetch the database connection: %s", err.Error())
+			return
+		}
+
 		migrator, err := migrations.InitMigrator(db)
 		if err != nil {
-			fmt.Println("Unable to fetch migrator")
+			fmt.Println("Unable to fetch migrator", err)
 			return
 		}
 
 		err = migrator.Up(cmd.Context())
 		if err != nil {
-			fmt.Println("Unable to run `up` migrations")
+			fmt.Println("Unable to run `up` migrations", err)
+		}
+	},
+}
+
+var migrateDownCmd = &cobra.Command{
+	Use:   "down",
+	Short: "Rollback migrations",
+	Run: func(cmd *cobra.Command, args []string) {
+		connString, err := cmd.Flags().GetString("connString")
+		if err != nil {
+			fmt.Println("Unable to read flag `connString`")
+			return
+		}
+
+		step, err := cmd.Flags().GetInt("step")
+		if err != nil {
+			fmt.Println("Unable to read flag `step`")
+			return
+		}
+
+		db, err := database.NewConnection(connString)
+		if err != nil {
+			fmt.Printf("Unable to fetch the database connection: %s", err.Error())
+			return
+		}
+
+		migrator, err := migrations.InitMigrator(db)
+		if err != nil {
+			fmt.Println("Unable to fetch migrator", err)
+			return
+		}
+
+		err = migrator.Down(cmd.Context(), step)
+		if err != nil {
+			fmt.Println("Unable to run `down` migrations", err)
 		}
 	},
 }

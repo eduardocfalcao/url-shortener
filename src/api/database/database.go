@@ -1,7 +1,11 @@
 package database
 
-import "database/sql"
+import (
+	"database/sql"
 
-func NewConnection(connectionString string) *sql.DB {
-	return nil
+	_ "github.com/go-sql-driver/mysql"
+)
+
+func NewConnection(connectionString string) (*sql.DB, error) {
+	return sql.Open("mysql", connectionString)
 }

@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"os"
 	"text/template"
@@ -25,17 +24,17 @@ func Create(name string) error {
 	t := template.Must(template.ParseFiles("./migrations/migration_template.tpl"))
 	err := t.Execute(&out, in)
 	if err != nil {
-		return errors.New("Unable to execute template:" + err.Error())
+		return fmt.Errorf("Unable to execute template: %w", err)
 	}
 
 	f, err := os.Create(fmt.Sprintf("./migrations/%s_%s.go", version, name))
 	if err != nil {
-		return errors.New("Unable to create migration file:" + err.Error())
+		return fmt.Errorf("Unable to create migration file: %w", err)
 	}
 	defer f.Close()
 
 	if _, err := f.WriteString(out.String()); err != nil {
-		return errors.New("Unable to write to migration file:" + err.Error())
+		return fmt.Errorf("Unable to write to migration file: %w", err)
 	}
 
 	fmt.Println("Generated new migration files...", f.Name())

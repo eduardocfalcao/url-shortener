@@ -12,7 +12,9 @@ type Migrator struct {
 	Migrations map[string]*Migration
 }
 
-var defaultMigrator = &Migrator{}
+var defaultMigrator = &Migrator{
+	Migrations: make(map[string]*Migration),
+}
 
 func (m *Migrator) AddMigration(migration *Migration) {
 	m.Migrations[migration.Version] = migration
@@ -52,6 +54,7 @@ func (m *Migrator) Up(ctx context.Context) error {
 			tx.Rollback()
 			return fmt.Errorf("Error trying to insert version %s in the schema_migrations table. %w", migration.Version, err)
 		}
+		fmt.Println("Finished running migration", migration.Version)
 	}
 	tx.Commit()
 	return nil
@@ -65,11 +68,11 @@ func (m *Migrator) Down(ctx context.Context, step int) error {
 	count := 0
 	for _, v := range reverse(m.Versions) {
 		if step > 0 && count == step {
+			fmt.Println("caiu no if")
 			break
 		}
 
 		migration := m.Migrations[v]
-
 		if !migration.done {
 			continue
 		}
@@ -95,7 +98,7 @@ func (m *Migrator) Down(ctx context.Context, step int) error {
 func reverse(args []string) []string {
 	rev := make([]string, len(args))
 	n := 0
-	for i := len(args) - 1; i >= 0; i++ {
+	for i := len(args) - 1; i >= 0; i-- {
 		rev[n] = args[i]
 		n++
 	}
