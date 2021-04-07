@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	migrations.AddMigration(&Migration{
+	defaultMigrator.AddMigration(&Migration{
 		Version: "{{.Version}}",
 		Up:      migration_{{.Version}}_{{.Name}}_up,
 		Down:    migration_{{.Version}}_{{.Name}}_down,
