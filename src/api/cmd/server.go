@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/eduardocfalcao/url-shortener/src/api/routes"
@@ -17,7 +21,23 @@ func StartHttpServer(address string) {
 		WriteTimeout: 10 * time.Second,
 	}
 
-	log.Printf("Starting the http server on port %s", address)
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
-	log.Fatal(server.ListenAndServe())
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		log.Printf("Starting server on the http server on port %s", address)
+		if err := server.ListenAndServe(); err != nil {
+			log.Fatal(err)
+			cancel()
+		}
+	}()
+
+	select {
+	case <-c:
+		log.Print("Stopping server...")
+		server.Shutdown(ctx)
+	case <-ctx.Done():
+	}
 }

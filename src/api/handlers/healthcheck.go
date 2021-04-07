@@ -32,6 +32,4 @@ func (h HealthcheckHandler) Healthcheck(w http.ResponseWriter, r *http.Request) 
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	//w.WriteHeader(http.StatusOK)
 }
