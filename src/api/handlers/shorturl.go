@@ -52,7 +52,7 @@ func (h ShortUrlHandler) Create(w http.ResponseWriter, r *http.Request) {
 func (h ShortUrlHandler) Redirect(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	shorturlString := vars["shorturl"]
-	log.Println("chegou aqui")
+
 	shorturl, err := h.repository.GetByShorturl(shorturlString)
 	if err != nil {
 		log.Println(err)
