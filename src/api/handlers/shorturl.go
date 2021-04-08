@@ -41,7 +41,7 @@ func (h ShortUrlHandler) Create(w http.ResponseWriter, r *http.Request) {
 			Error:     "The request sent couldn't be processed.",
 			ErrorCode: model.InvalidRequest,
 		})
-		log.Printf("An error occured when calling the Create method from the repository.")
+		log.Printf("An error occured when calling the Create method from the repository. %s", err)
 		return
 	}
 
