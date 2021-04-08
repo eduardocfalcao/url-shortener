@@ -5,14 +5,16 @@ import (
 
 	"github.com/eduardocfalcao/url-shortener/src/api/handlers"
 	"github.com/eduardocfalcao/url-shortener/src/api/middlewares"
+	"github.com/gorilla/mux"
 )
 
 func RegisterRoutes(container *handlers.HandlersContainer) http.Handler {
 
-	mux := http.NewServeMux()
+	r := mux.NewRouter()
 
-	mux.HandleFunc("/healthcheck", container.HealthcheckHandler.Healthcheck)
-	mux.HandleFunc("/shorturl", middlewares.EnsurePost(container.ShortUrlHandler.Create))
+	r.HandleFunc("/healthcheck", container.HealthcheckHandler.Healthcheck)
+	r.HandleFunc("/shorturl", middlewares.EnsurePost(container.ShortUrlHandler.Create))
+	r.HandleFunc("/short/{shorturl}", container.ShortUrlHandler.Redirect)
 
-	return mux
+	return r
 }

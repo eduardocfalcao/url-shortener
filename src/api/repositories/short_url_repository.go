@@ -40,3 +40,22 @@ func (r short_url_repository) Create(u entities.ShortUrl) (int, error) {
 
 	return id, nil
 }
+
+func (r short_url_repository) GetByShorturl(shorturl string) (entities.ShortUrl, error) {
+	s := entities.ShortUrl{}
+	result := r.db.QueryRow(`
+			SELECT id, name, shorturl, url
+			FROM short_urls
+			WHERE shorturl = $1`,
+		shorturl)
+
+	if result.Err() != nil {
+		return entities.ShortUrl{}, fmt.Errorf("Error occured when trying to get a short url from database. %w", result.Err())
+	}
+
+	if err := result.Scan(&s.ID, &s.Name, &s.ShortUrl, &s.URL); err != nil {
+		return entities.ShortUrl{}, fmt.Errorf("Error occured when trying to fetch the short url from database. %w", result.Err())
+	}
+
+	return s, nil
+}

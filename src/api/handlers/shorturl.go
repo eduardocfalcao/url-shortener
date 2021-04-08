@@ -8,6 +8,7 @@ import (
 	"github.com/eduardocfalcao/url-shortener/src/api/entities"
 	"github.com/eduardocfalcao/url-shortener/src/api/interfaces"
 	"github.com/eduardocfalcao/url-shortener/src/api/model"
+	"github.com/gorilla/mux"
 )
 
 type ShortUrlHandler struct {
@@ -46,4 +47,18 @@ func (h ShortUrlHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+}
+
+func (h ShortUrlHandler) Redirect(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	shorturlString := vars["shorturl"]
+	log.Println("chegou aqui")
+	shorturl, err := h.repository.GetByShorturl(shorturlString)
+	if err != nil {
+		log.Println(err)
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	http.Redirect(w, r, shorturl.URL, http.StatusSeeOther)
 }

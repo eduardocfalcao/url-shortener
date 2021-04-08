@@ -33,3 +33,24 @@ func (_m *ShortUrlRepository) Create(_a0 entities.ShortUrl) (int, error) {
 
 	return r0, r1
 }
+
+// GetByShorturl provides a mock function with given fields: shorturl
+func (_m *ShortUrlRepository) GetByShorturl(shorturl string) (entities.ShortUrl, error) {
+	ret := _m.Called(shorturl)
+
+	var r0 entities.ShortUrl
+	if rf, ok := ret.Get(0).(func(string) entities.ShortUrl); ok {
+		r0 = rf(shorturl)
+	} else {
+		r0 = ret.Get(0).(entities.ShortUrl)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(shorturl)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
