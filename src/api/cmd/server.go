@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +17,7 @@ import (
 func StartHttpServer(address string, config config.AppConfig) {
 	handler := routes.RegisterRoutes()
 	server := &http.Server{
-		Addr:         address,
+		Addr:         fmt.Sprintf(":%d", config.AppPort),
 		Handler:      handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
