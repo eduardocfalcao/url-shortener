@@ -4,13 +4,15 @@ import (
 	"net/http"
 
 	"github.com/eduardocfalcao/url-shortener/src/api/handlers"
+	"github.com/eduardocfalcao/url-shortener/src/api/middlewares"
 )
 
-func RegisterRoutes() http.Handler {
-	hcHandler := handlers.HealthcheckHandler{}
+func RegisterRoutes(container *handlers.HandlersContainer) http.Handler {
+
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/healthcheck", hcHandler.Healthcheck)
+	mux.HandleFunc("/healthcheck", container.HealthcheckHandler.Healthcheck)
+	mux.HandleFunc("/shorturl", middlewares.EnsurePost(container.ShortUrlHandler.Create))
 
 	return mux
 }

@@ -5,8 +5,8 @@ import (
 )
 
 type ShortUrlRepository interface {
-	Create(entities.ShortUrl) error
-	Update(int, entities.ShortUrl) error
-	Delete(int) error
-	GetById(int) (entities.ShortUrl, error)
+	Create(entities.ShortUrl) (int64, error)
+	// Update(int, entities.ShortUrl) error
+	// Delete(int) error
+	// GetById(int) (entities.ShortUrl, error)
 }

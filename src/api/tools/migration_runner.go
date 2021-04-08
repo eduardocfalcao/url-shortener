@@ -37,7 +37,6 @@ var migrateCmd = &cobra.Command{
 	Use:   "migrate",
 	Short: "database migrations tool",
 	Run: func(cmd *cobra.Command, args []string) {
-
 	},
 }
 

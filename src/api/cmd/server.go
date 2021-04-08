@@ -11,11 +11,17 @@ import (
 	"time"
 
 	"github.com/eduardocfalcao/url-shortener/src/api/config"
+	"github.com/eduardocfalcao/url-shortener/src/api/handlers"
 	"github.com/eduardocfalcao/url-shortener/src/api/routes"
 )
 
 func StartHttpServer(address string, config config.AppConfig) {
-	handler := routes.RegisterRoutes()
+	container, err := handlers.NewHandlersContainer(config)
+	if err != nil {
+		log.Fatalf("Error when trying to create the handlers container: %s", err.Error())
+	}
+
+	handler := routes.RegisterRoutes(container)
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", config.AppPort),
 		Handler:      handler,
@@ -31,7 +37,7 @@ func StartHttpServer(address string, config config.AppConfig) {
 	go func() {
 		log.Printf("Starting server on the http server on port %s", address)
 		if err := server.ListenAndServe(); err != nil {
-			log.Fatal(err)
+			log.Print(err)
 			cancel()
 		}
 	}()

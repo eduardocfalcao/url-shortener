@@ -14,64 +14,22 @@ type ShortUrlRepository struct {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *ShortUrlRepository) Create(_a0 entities.ShortUrl) error {
+func (_m *ShortUrlRepository) Create(_a0 entities.ShortUrl) (int64, error) {
 	ret := _m.Called(_a0)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(entities.ShortUrl) error); ok {
+	var r0 int64
+	if rf, ok := ret.Get(0).(func(entities.ShortUrl) int64); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// Delete provides a mock function with given fields: _a0
-func (_m *ShortUrlRepository) Delete(_a0 int) error {
-	ret := _m.Called(_a0)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
-		r0 = rf(_a0)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// GetById provides a mock function with given fields: _a0
-func (_m *ShortUrlRepository) GetById(_a0 int) (entities.ShortUrl, error) {
-	ret := _m.Called(_a0)
-
-	var r0 entities.ShortUrl
-	if rf, ok := ret.Get(0).(func(int) entities.ShortUrl); ok {
-		r0 = rf(_a0)
-	} else {
-		r0 = ret.Get(0).(entities.ShortUrl)
+		r0 = ret.Get(0).(int64)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
+	if rf, ok := ret.Get(1).(func(entities.ShortUrl) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
 
 	return r0, r1
-}
-
-// Update provides a mock function with given fields: _a0, _a1
-func (_m *ShortUrlRepository) Update(_a0 int, _a1 entities.ShortUrl) error {
-	ret := _m.Called(_a0, _a1)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int, entities.ShortUrl) error); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
 }

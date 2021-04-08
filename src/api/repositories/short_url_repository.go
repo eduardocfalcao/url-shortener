@@ -5,10 +5,15 @@ import (
 	"fmt"
 
 	"github.com/eduardocfalcao/url-shortener/src/api/entities"
+	"github.com/eduardocfalcao/url-shortener/src/api/interfaces"
 )
 
 type short_url_repository struct {
 	db *sql.DB
+}
+
+func NewShortUrlRepository(db *sql.DB) interfaces.ShortUrlRepository {
+	return &short_url_repository{db}
 }
 
 func (r short_url_repository) Create(u entities.ShortUrl) (int64, error) {

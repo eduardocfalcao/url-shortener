@@ -6,7 +6,7 @@ import (
 
 type AppConfig struct {
 	ConnectionString string `mapstructure:"CONN_STRING"`
-	AppPort          int    `mapstructure:"APP_PORT" env:"APP_PORT"`
+	AppPort          int    `mapstructure:"APP_PORT"`
 }
 
 func SetupConfigFile(path, file string) error {
