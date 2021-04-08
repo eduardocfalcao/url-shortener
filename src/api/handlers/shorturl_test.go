@@ -26,7 +26,7 @@ func Test_Create(t *testing.T) {
 	cases := map[string]struct {
 		ShortUrl   *model.ShorturlRequest
 		DecodeErr  error
-		ReturnID   int64
+		ReturnID   int
 		CreateErr  error
 		StatusCode int
 	}{

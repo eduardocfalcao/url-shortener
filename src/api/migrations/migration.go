@@ -15,14 +15,15 @@ type Migration struct {
 func InitMigrator(db *sql.DB) (*Migrator, error) {
 	defaultMigrator.db = db
 
-	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations (
-		version varchar(255)
+	if _, err := db.Exec(`CREATE TABLE IF NOT EXISTS schema_migrations 
+	(
+		version varchar(255) NOT NULL UNIQUE
 	);`); err != nil {
-		err = fmt.Errorf("Unable to create `schema_migrations` table: %w", err)
+		err = fmt.Errorf("Unable to create schema_migrations table: %w", err)
 		return defaultMigrator, err
 	}
 
-	rows, err := db.Query("SELECT version FROM `schema_migrations`")
+	rows, err := db.Query("SELECT version FROM schema_migrations")
 	if err != nil {
 		return defaultMigrator, err
 	}

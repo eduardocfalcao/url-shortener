@@ -16,12 +16,11 @@ func Test_Create(t *testing.T) {
 	defer db.Close()
 
 	cases := map[string]struct {
-		ReturnId     int64
-		AffectedRows int
-		Err          error
+		ReturnId int
+		Err      error
 	}{
-		"Create wihtout error": {ReturnId: 1, AffectedRows: 1, Err: nil},
-		"Create with error":    {ReturnId: 0, AffectedRows: 0, Err: errors.New("some error")},
+		"Create wihtout error": {ReturnId: 1, Err: nil},
+		"Create with error":    {ReturnId: 0, Err: errors.New("some error")},
 	}
 
 	sut := short_url_repository{
@@ -30,12 +29,15 @@ func Test_Create(t *testing.T) {
 	for name, testCase := range cases {
 		t.Run(name, func(t *testing.T) {
 			mock.ExpectBegin()
-			expectedExec := mock.ExpectExec("INSERT INTO short_urls")
+			expectedQuery := mock.ExpectQuery("INSERT INTO short_urls")
 			if testCase.Err == nil {
-				expectedExec.WillReturnResult(sqlmock.NewResult(testCase.ReturnId, int64(testCase.AffectedRows)))
+				rows := sqlmock.
+					NewRows([]string{"id"}).
+					AddRow(testCase.ReturnId)
+				expectedQuery.WillReturnRows(rows)
 				mock.ExpectCommit()
 			} else {
-				expectedExec.WillReturnError(testCase.Err)
+				expectedQuery.WillReturnError(testCase.Err)
 			}
 
 			id, err := sut.Create(entities.ShortUrl{
@@ -45,7 +47,7 @@ func Test_Create(t *testing.T) {
 			})
 
 			if id != testCase.ReturnId {
-				t.Errorf("Returned id should be 1.")
+				t.Errorf("Returned id should be %d.", testCase.ReturnId)
 			}
 
 			if testCase.Err != nil && !errors.As(err, &testCase.Err) {

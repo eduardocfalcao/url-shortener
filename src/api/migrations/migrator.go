@@ -50,7 +50,7 @@ func (m *Migrator) Up(ctx context.Context) error {
 			return fmt.Errorf("Error trying to run migration %s. %w", migration.Version, err)
 		}
 
-		if _, err := tx.Exec("Insert INTO `schema_migrations` VALUES(?)", migration.Version); err != nil {
+		if _, err := tx.Exec("Insert INTO schema_migrations VALUES($1)", migration.Version); err != nil {
 			tx.Rollback()
 			return fmt.Errorf("Error trying to insert version %s in the schema_migrations table. %w", migration.Version, err)
 		}
@@ -83,7 +83,7 @@ func (m *Migrator) Down(ctx context.Context, step int) error {
 			return fmt.Errorf("Error trying to revert migration %s. %w", migration.Version, err)
 		}
 
-		if _, err := tx.Exec("DELETE FROM `schema_migrations` WHERE version = ?", migration.Version); err != nil {
+		if _, err := tx.Exec("DELETE FROM schema_migrations WHERE version = $1", migration.Version); err != nil {
 			tx.Rollback()
 			return fmt.Errorf("Error trying to delete version %s in the schema_migrations table. %w", migration.Version, err)
 		}

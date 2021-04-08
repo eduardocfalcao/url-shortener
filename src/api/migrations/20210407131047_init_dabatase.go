@@ -14,14 +14,15 @@ func init() {
 
 func migration_20210407131047_init_dabatase_up(tx *sql.Tx) error {
 	_, err := tx.Exec(`
-		CREATE TABLE IF NOT EXISTS short_urls (
-			id int(11) NOT NULL AUTO_INCREMENT,
+		CREATE TABLE IF NOT EXISTS short_urls 
+		(
+			id serial primary key,
 			name varchar(255),
-			shorturl varchar(30),
+			shorturl varchar(30) unique,
 			url varchar(500),
-			PRIMARY KEY(id),
-			UNIQUE KEY(shorturl)
-	);`)
+			created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+			UNIQUE(shorturl)
+		);`)
 	return err
 }
 

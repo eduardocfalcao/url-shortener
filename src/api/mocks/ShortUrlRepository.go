@@ -14,14 +14,14 @@ type ShortUrlRepository struct {
 }
 
 // Create provides a mock function with given fields: _a0
-func (_m *ShortUrlRepository) Create(_a0 entities.ShortUrl) (int64, error) {
+func (_m *ShortUrlRepository) Create(_a0 entities.ShortUrl) (int, error) {
 	ret := _m.Called(_a0)
 
-	var r0 int64
-	if rf, ok := ret.Get(0).(func(entities.ShortUrl) int64); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(entities.ShortUrl) int); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(int64)
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error

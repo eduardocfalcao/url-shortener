@@ -16,13 +16,27 @@ func NewShortUrlRepository(db *sql.DB) interfaces.ShortUrlRepository {
 	return &short_url_repository{db}
 }
 
-func (r short_url_repository) Create(u entities.ShortUrl) (int64, error) {
-	tx, _ := r.db.Begin()
-	result, err := tx.Exec("INSERT INTO short_urls (name, shorturl, url) VALUES(?,?,?)", u.Name, u.ShortUrl, u.URL)
+func (r short_url_repository) Create(u entities.ShortUrl) (int, error) {
+	tx, err := r.db.Begin()
 	if err != nil {
-		return 0, fmt.Errorf("Error occured when trying to create a new short url. %w", err)
+		return 0, fmt.Errorf("Error occured when trying to begin a new transaction. %w", err)
 	}
+	id := 0
+	result := tx.QueryRow(`
+			INSERT INTO short_urls (name, shorturl, url) 
+			VALUES($1,$2,$3) 
+			RETURNING id`,
+		u.Name, u.ShortUrl, u.URL)
+
+	if result.Err() != nil {
+		return 0, fmt.Errorf("Error occured when trying to create a new short url. %w", result.Err())
+	}
+
+	if err = result.Scan(&id); err != nil {
+		return 0, fmt.Errorf("Error occured when trying to fetch the id from the new short url. %w", result.Err())
+	}
+
 	tx.Commit()
 
-	return result.LastInsertId()
+	return id, nil
 }
