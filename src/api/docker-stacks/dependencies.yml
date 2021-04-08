@@ -13,3 +13,8 @@ services:
     environment:
       MYSQL_DATABASE: url-shortener
       MYSQL_ROOT_PASSWORD: 12345678a
+  redis:
+    image: redis
+    restart: always
+    ports: 
+      - 6379:6379
