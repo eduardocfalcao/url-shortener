@@ -8,7 +8,7 @@ import (
 	"github.com/eduardocfalcao/url-shortener/src/api/entities"
 )
 
-func Test_Crate(t *testing.T) {
+func Test_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Error(err)
