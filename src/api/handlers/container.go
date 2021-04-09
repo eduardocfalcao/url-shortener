@@ -15,7 +15,7 @@ type HandlersContainer struct {
 
 func NewHandlersContainer(appConfig config.AppConfig) (*HandlersContainer, error) {
 	redisClient := redis.NewClient(&redis.Options{
-		Addr:     appConfig.ConnectionString,
+		Addr:     appConfig.RedisAddress,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
