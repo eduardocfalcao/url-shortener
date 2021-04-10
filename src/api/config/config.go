@@ -11,7 +11,6 @@ type AppConfig struct {
 }
 
 func SetupConfigFile(path, file string) error {
-	viper.AutomaticEnv()
 	viper.AddConfigPath(path)
 	viper.SetConfigName(file)
 	viper.SetConfigType("env")
@@ -23,6 +22,7 @@ func SetupConfigFile(path, file string) error {
 }
 
 func GetConfiguration() AppConfig {
+	viper.AutomaticEnv()
 	return AppConfig{
 		ConnectionString: viper.GetString("CONN_STRING"),
 		AppPort:          viper.GetInt("APP_PORT"),

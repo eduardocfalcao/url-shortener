@@ -14,12 +14,16 @@ func RegisterRoutes(container *handlers.HandlersContainer) http.Handler {
 	r := mux.NewRouter()
 
 	r.Handle("/metrics", promhttp.Handler())
-	r.HandleFunc("/healthcheck", container.HealthcheckHandler.Healthcheck)
+	r.HandleFunc("/healthcheck",
+		middlewares.LoggingMiddleware(container.HealthcheckHandler.Healthcheck))
 
-	r.HandleFunc("/shorturl", container.ShortUrlHandler.Create).Methods("POST")
+	r.HandleFunc("/shorturl",
+		middlewares.LoggingMiddleware(container.ShortUrlHandler.Create)).Methods("POST")
 
 	m := middlewares.NewApiRateLimiter(1, 1)
-	r.HandleFunc("/short/{shorturl}", m.Limit(container.ShortUrlHandler.Redirect))
+	r.HandleFunc("/short/{shorturl}",
+		m.Limit(
+			middlewares.LoggingMiddleware(container.ShortUrlHandler.Redirect)))
 
 	return r
 }

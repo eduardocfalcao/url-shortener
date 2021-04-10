@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/eduardocfalcao/url-shortener/src/api/cmd"
+	"github.com/eduardocfalcao/url-shortener/src/api/cmd/server"
 	"github.com/eduardocfalcao/url-shortener/src/api/config"
 )
 
@@ -21,5 +21,5 @@ func main() {
 
 	config := config.GetConfiguration()
 
-	cmd.StartHttpServer(":8080", config)
+	server.StartHttpServer(config)
 }

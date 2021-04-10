@@ -1,4 +1,4 @@
-package cmd
+package server
 
 import (
 	"context"
@@ -15,15 +15,16 @@ import (
 	"github.com/eduardocfalcao/url-shortener/src/api/routes"
 )
 
-func StartHttpServer(address string, config config.AppConfig) {
+func StartHttpServer(config config.AppConfig) {
 	container, err := handlers.NewHandlersContainer(config)
 	if err != nil {
 		log.Fatalf("Error when trying to create the handlers container: %s", err.Error())
 	}
 
+	address := fmt.Sprintf(":%d", config.AppPort)
 	handler := routes.RegisterRoutes(container)
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", config.AppPort),
+		Addr:         address,
 		Handler:      handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
