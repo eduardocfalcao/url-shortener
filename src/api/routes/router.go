@@ -20,10 +20,13 @@ func RegisterRoutes(container *handlers.HandlersContainer) http.Handler {
 	r.HandleFunc("/shorturl",
 		middlewares.LoggingMiddleware(container.ShortUrlHandler.Create)).Methods("POST")
 
-	m := middlewares.NewApiRateLimiter(1, 1)
+	rateLimitMiddleware := middlewares.NewApiRateLimiter(1, 1)
+	metricsMiddleware := middlewares.NewAccessCountMiddleware()
 	r.HandleFunc("/short/{shorturl}",
-		m.Limit(
-			middlewares.LoggingMiddleware(container.ShortUrlHandler.Redirect)))
+		rateLimitMiddleware.Limit(
+			middlewares.LoggingMiddleware(
+				metricsMiddleware.Collect(
+					container.ShortUrlHandler.Redirect))))
 
 	return r
 }

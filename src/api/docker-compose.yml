@@ -25,6 +25,13 @@ services:
     volumes:
       - ./docker-stacks/.prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
+  grafana:
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    
+
   url-shortener:
     build: .
     container_name: url-shortener
